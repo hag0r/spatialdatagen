@@ -2,14 +2,22 @@ package dbis.datagen.spatial
 
 import dbis.datagen.spatial.types.Point
 
-class PointGenerator(min: Double, max: Double, n: Long) extends AbstractGenerator[Point] {
+/**
+ * A generator for random points.
+ * 
+ * @param minX minimal x value
+ * @param maxX maximal x value
+ * @param minY minimal y value
+ * @param maxY maximal y value 
+ */
+class PointGenerator(minX: Double, maxX: Double, minY: Double, maxY: Double, n: Long) extends AbstractGenerator[Point] {
   
-  override def iterator = for(i <- (0L until n).iterator) yield PointGenerator.point(min, max) 
+  override def iterator = for(i <- (0L until n).iterator) yield PointGenerator.point(minX, maxX, minY, maxY) 
   
 }
 
 object PointGenerator {
   
-  def point(min: Double, max: Double) = Point(BasicGenerators.double(min, max), BasicGenerators.double(min, max))
+  def point(minX: Double, maxX: Double, minY: Double, maxY: Double) = Point(BasicGenerators.double(minX, maxX), BasicGenerators.double(minY, maxY))
   
 }

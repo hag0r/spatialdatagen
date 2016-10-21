@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
 
 libraryDependencies ++= Seq(
    "org.scalatest" %% "scalatest" % "3.0.0" % "test" withSources(),
-   "org.scalacheck" %% "scalacheck" % "1.13.2" ,
+   "org.scalacheck" %% "scalacheck" % "1.13.2" % "test" ,
    "com.github.scopt" %% "scopt" % "3.5.0"
 )
 
@@ -15,6 +15,12 @@ logBuffered in Test := false
 
 parallelExecution in Test := false
 
-assemblyJarName in assembly := s"$name.jar"
+mainClass in (Compile, packageBin) := Some("dbis.datagen.spatial.Generator")
 
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+mainClass in (Compile, run) := Some("dbis.datagen.spatial.Generator")
+
+mainClass in assembly := Some("dbis.datagen.spatial.Generator")
+
+assemblyJarName in assembly := s"${name.value}.jar"
+
+// assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)

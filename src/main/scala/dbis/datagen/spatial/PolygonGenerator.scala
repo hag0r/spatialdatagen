@@ -2,14 +2,19 @@ package dbis.datagen.spatial
 
 import scala.util.Random
 import dbis.datagen.spatial.types.Polygon
-import org.scalacheck.Gen
 import dbis.datagen.spatial.types.Point
 
-class PolygonGenerator(maxRadius1: Double, maxRadius2: Double, approx: Int, min: Double, max: Double, n: Long) extends AbstractGenerator[Polygon] {
+/**
+ * A generator class for polygons
+ */
+class PolygonGenerator(
+    minX: Double, maxX: Double, minY: Double, maxY: Double, 
+    maxRadius1: Double, maxRadius2: Double, 
+    approx: Int, n: Long) extends AbstractGenerator[Polygon] {
   
   require(approx >= 3, "approximation points must be at least 3")
   
-  private val pg = new PointGenerator(min, max, approx)
+  private val pg = new PointGenerator(minX, maxX, minY, maxY, approx)
   
   
   override def iterator = for(i <- (0L until n).iterator) yield createPolygon 
@@ -18,7 +23,7 @@ class PolygonGenerator(maxRadius1: Double, maxRadius2: Double, approx: Int, min:
   def createPolygon: Polygon = {
     
     // center point for ellipse
-    val center = PointGenerator.point(min, max)
+    val center = PointGenerator.point(minX, maxX, minY, maxY)
     
     // create radius for ellipse
 		val xRadius = BasicGenerators.double(1, maxRadius1)
