@@ -3,6 +3,10 @@ package dbis.setm
 import etm.core.configuration.BasicEtmConfigurator
 import etm.core.configuration.EtmManager
 import etm.core.renderer.{MeasurementRenderer, SimpleTextRenderer}
+import java.nio.charset.Charset
+import java.io.OutputStreamWriter
+import java.util.Locale
+import java.io.PrintStream
 
 /**
  * SETM is a simple wrapper for JETM to provide a
@@ -26,8 +30,10 @@ object SETM {
    *
    * @param renderer The renderer to use
    */
-  def collect() = {
-    monitor.render(new SimpleTextRenderer())
+  def collect(stream: PrintStream = System.err) = {
+    val writer = new OutputStreamWriter(stream, Charset.defaultCharset())
+    val locale = Locale.getDefault()
+    monitor.render(new SimpleTextRenderer(writer, locale))
     monitor.stop()
   }
 

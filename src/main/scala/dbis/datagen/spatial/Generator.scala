@@ -21,7 +21,7 @@ object Generator {
    * This ugly hack is used to suppress the annoying ETM monitor info message.
    */
   val filteredOut = new PrintStream(System.out) {
-    override def println(l: String) = if (!l.startsWith("[INFO ]")) super.println(l)
+    override def println(l: String) = if(!l.startsWith("[INFO ]")) super.println(l)
   }
   System.setOut(filteredOut)
   
