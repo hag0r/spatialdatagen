@@ -1,6 +1,7 @@
 package dbis.datagen.spatial
 
 import dbis.datagen.spatial.types.Point
+import dbis.setm.SETM._
 
 /**
  * A generator for random points.
@@ -18,6 +19,6 @@ class PointGenerator(minX: Double, maxX: Double, minY: Double, maxY: Double, n: 
 
 object PointGenerator {
   
-  def point(minX: Double, maxX: Double, minY: Double, maxY: Double) = Point(BasicGenerators.double(minX, maxX), BasicGenerators.double(minY, maxY))
+  def point(minX: Double, maxX: Double, minY: Double, maxY: Double) = timing("single point") { Point(BasicGenerators.double(minX, maxX), BasicGenerators.double(minY, maxY))}
   
 }

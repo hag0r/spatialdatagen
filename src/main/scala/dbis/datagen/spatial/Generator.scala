@@ -7,12 +7,24 @@ import java.nio.file.Paths
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
+import dbis.setm.SETM._
+import dbis.setm.SETM
+import java.io.PrintStream
 
 /**
  * A generator for spatial data. It can create a set of points and polygons with 
  * specified characteristics. 
  */
 object Generator {
+  
+  /*
+   * This ugly hack is used to suppress the annoying ETM monitor info message.
+   */
+  val filteredOut = new PrintStream(System.out) {
+    override def println(l: String) = if (!l.startsWith("[INFO ]")) super.println(l)
+  }
+  System.setOut(filteredOut)
+  
   
   val NUM_DEFAULT = 10
   val POLYPOINTS_DEFAULT = 100
@@ -26,8 +38,14 @@ object Generator {
   
   def main(args: Array[String]) {
     
+    
+    
+    
     // parse CLI arguments
     val params = Params.parseArgs(args)
+    
+    if(params.quiet)
+      SETM.disable
     
     /*
      * This starts everything.
@@ -40,6 +58,9 @@ object Generator {
       params.file       // target output, if set, write to file, otherwise write to stdout
     )
     
+    if(!params.quiet)
+      collect()
+    
   }
   
   /**
@@ -47,7 +68,7 @@ object Generator {
    * 
    * @param params The parameters for generation
    */
-  def generate(params: Params): Iterator[String] = {
+  def generate(params: Params): Iterator[String] = timing("generate") {
     
     require(params.num > 0, "num must be > 0")
     require(params.types.nonEmpty, s"types must not be empty")
@@ -83,7 +104,7 @@ object Generator {
    * @param elems The list of elements to print
    * @param file the file name to write to, if empty (None) use stdout 
    */
-  def print(elems: Iterator[String], file: Option[Path]) {
+  def print(elems: Iterator[String], file: Option[Path]) = timing("print") {
     
     if(file.isDefined)
       Files.write(file.get, elems.toStream.asJava, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)

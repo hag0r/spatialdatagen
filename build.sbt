@@ -2,7 +2,11 @@ name := "spatialdatagen"
 
 scalaVersion := "2.11.8"
 
-lazy val root = (project in file("."))
+lazy val setm = (project in file("setm"))
+
+lazy val root = (project in file(".")).dependsOn(setm)
+
+
 
 libraryDependencies ++= Seq(
    "org.scalatest" %% "scalatest" % "3.0.0" % "test" withSources(),

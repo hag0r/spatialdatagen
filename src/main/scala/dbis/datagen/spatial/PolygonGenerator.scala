@@ -3,6 +3,7 @@ package dbis.datagen.spatial
 import scala.util.Random
 import dbis.datagen.spatial.types.Polygon
 import dbis.datagen.spatial.types.Point
+import dbis.setm.SETM._
 
 /**
  * A generator class for polygons
@@ -23,7 +24,7 @@ class PolygonGenerator(
   override def iterator = for(i <- (0L until n).iterator) yield createPolygon 
   
   
-  def createPolygon: Polygon = {
+  def createPolygon: Polygon = timing("single polygon") {
     
     // center point for ellipse
     val center = PointGenerator.point(minX, maxX, minY, maxY)
