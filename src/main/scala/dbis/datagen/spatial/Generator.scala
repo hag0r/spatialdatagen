@@ -61,7 +61,7 @@ object Generator {
     require((!params.types.contains(GeomType.POLYGON)) || params.maxYRadius > 0, "y-radius must be > 0")
     require((!params.types.contains(GeomType.POLYGON)) || params.polyPoints > 0, "y-radius must be > 0")
     
-    params.types.iterator.flatMap { t => 
+    val geoms = params.types.iterator.flatMap { t => 
       t match {
         case GeomType.POINT => 
           new PointGenerator(params.minX, params.maxX, params.minY, params.maxY, params.num).iterator
@@ -69,6 +69,12 @@ object Generator {
           new PolygonGenerator(params.minX, params.maxX, params.minY, params.maxY, params.maxXRadius, params.maxYRadius,params.polyPoints, params.num).iterator
       }
     }.map(_.wkt)
+    
+    
+    if(params.id)
+      geoms.zipWithIndex.map{ case (wkt, id) => s"$id;$wkt" }
+    else
+      geoms
   }
   
   /**

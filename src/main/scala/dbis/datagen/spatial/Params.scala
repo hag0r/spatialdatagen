@@ -26,6 +26,7 @@ case class Params(
   maxYRadius: Double = Double.NaN,
   num: Int = Generator.NUM_DEFAULT,
   polyPoints: Int = Generator.POLYPOINTS_DEFAULT,
+  id: Boolean = false,
   file: Option[Path] = None,
   types: Array[GeomType.GeomType] = Array.empty
 ) 
@@ -44,6 +45,7 @@ object Params {
       opt[Double]("y-radius") optional() action { (x,c) => c.copy(maxYRadius = x) } validate( x => if (x > 0) success else failure("Value <y-radius> must be >0") ) text("Maximal y radius of the ellipse to generate polygons (only needed for polygons)")
       opt[Int]('a',"approx") optional() action { (x,c) => c.copy(polyPoints = x) } validate( x => if (x >= 3) success else failure("Value <approx> must be >=3") ) text(s"Maximun number of points to use to represent a polygon, default = ${Generator.POLYPOINTS_DEFAULT}")
       opt[Int]('n',"num") optional() action { (x,c) => c.copy(num = x) } validate( x => if (x > 0) success else failure("Value <num> must be >0") ) text(s"Number of elements to generate in total, default = ${Generator.NUM_DEFAULT}")
+      opt[Unit]("id") optional() action { (_,c) => c.copy(id = true) } text("Generate an ID (Long) for each object")
       opt[Seq[String]]('t',"types") required() action { (x,c) => 
         c.copy(types = x.map(t => GeomType.withName(t.toUpperCase())).toArray)} text(s"Comma separated list of types to generate (${GeomType.values.map(_.toString().toLowerCase()).mkString(",")})")
       arg[File]("file") optional() action { (x, c) => c.copy(file = Some(x.toPath())) } text ("Output file to write results to. Use <stdout> if empty")

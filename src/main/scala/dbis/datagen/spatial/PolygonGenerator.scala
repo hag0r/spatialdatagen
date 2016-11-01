@@ -13,6 +13,9 @@ class PolygonGenerator(
     approx: Int, n: Long) extends AbstractGenerator[Polygon] {
   
   require(approx >= 3, "approximation points must be at least 3")
+  require(maxRadius1 > 0, "max-x radius must be > 0")
+  require(maxRadius2 > 0, "max-y radius must be > 0")
+  require(n > 0, "number of polygons to generate must be > 0")
   
   private val pg = new PointGenerator(minX, maxX, minY, maxY, approx)
   
@@ -34,13 +37,14 @@ class PolygonGenerator(
 		
 		// first create numPoints angles
     var prevAngle = 0.0
-    val points = (0 until numPoints).map { i => 
+    val points = (0 until numPoints).iterator.map { i => 
       val a = BasicGenerators.double(prevAngle, 359) 
       prevAngle = a
       a
     }
     .map { a => math.toRadians(a)} // cos and sin expect Rad !!!
     .map { angle =>  // convert each angle into a point on the ellipse
+      
       val x = xRadius * math.cos(angle) + center.x 
       val y = yRadius * math.sin(angle) + center.y
       
