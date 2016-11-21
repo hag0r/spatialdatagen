@@ -30,3 +30,16 @@ Usage: Spatial Data Generator [options] [file]
   -t, --types <value>   Comma separated list of types to generate (point,polygon)
   file                  Output file to write results to. Use <stdout> if empty
 ```
+
+## Data generation strategies
+
+For points, we use the Java/Scala random number generator to create the coordinate values for `x` and `y`.
+
+Polygons are a little more complex to generate. Currently, we create a random center point and create an ellipe around it with the specified max radius in `x` and `y` direction, resoectively. The actual radius is a random value between 1 and the respective max value. Then we create between 3 and `approx` points on that ellipse and use these points as the polygon's boundary points.
+This results in convex polygons only!
+
+## TODO
+* more geometry types (linestring, circle, ...)
+* concave polygons
+* payload data?
+* configurable separator (currently `;` only)
