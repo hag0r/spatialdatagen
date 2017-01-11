@@ -28,6 +28,7 @@ Usage: Spatial Data Generator [options] [file]
   --id                  Generate an ID (Long) for each object
   -q, --quiet           Do not print execution time statistics
   -t, --types <value>   Comma separated list of types to generate (point,polygon)
+  -i, --interval <value>  create interval with given min and max bounds
   file                  Output file to write results to. Use <stdout> if empty
 ```
 
@@ -37,6 +38,15 @@ For points, we use the Java/Scala random number generator to create the coordina
 
 Polygons are a little more complex to generate. Currently, we create a random center point and create an ellipe around it with the specified max radius in `x` and `y` direction, resoectively. The actual radius is a random value between 1 and the respective max value. Then we create between 3 and `approx` points on that ellipse and use these points as the polygon's boundary points.
 This results in convex polygons only!
+
+The intervals (`-i`, `--interval`) can be used to create a (temporal) interval. The generated value will be added to the output as two fields `start` and `end`.
+
+For `-t point,polygon --id --interval 1,10` the result will look like
+
+```
+0;POINT(25.97324975670142 -65.94055919025132);3;7
+```
+Where the first field is the ID, then the WKT of the geometry (in this case a point), and then followed by the start value of the interval (3) and the end value (7).
 
 ## TODO
 * more geometry types (linestring, circle, ...)
