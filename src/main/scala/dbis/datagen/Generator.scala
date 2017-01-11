@@ -1,15 +1,15 @@
-package dbis.datagen.spatial
+package dbis.datagen
 
 import scala.collection.JavaConverters._
-import scopt.OptionParser
 import java.nio.file.Path
-import java.nio.file.Paths
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 import dbis.setm.SETM._
 import dbis.setm.SETM
 import java.io.PrintStream
+import dbis.datagen.st.IntervalGenerator
+import dbis.datagen.st.PointGenerator
+import dbis.datagen.st.PolygonGenerator
 
 /**
  * A generator for spatial data. It can create a set of points and polygons with 
@@ -29,17 +29,14 @@ object Generator {
   val NUM_DEFAULT = 10
   val POLYPOINTS_DEFAULT = 100
   
-  object GeomType extends Enumeration {
-    type GeomType = Value
+  object Type extends Enumeration {
+    type Type = Value
     val POINT, POLYGON= Value
   }
   
   
   
   def main(args: Array[String]) {
-    
-    
-    
     
     // parse CLI arguments
     val params = Params.parseArgs(args)
@@ -78,24 +75,28 @@ object Generator {
     require(!params.minY.isNaN(), "min-y must be set" )
     require(!params.maxY.isNaN(), "max-y must be set" )
     require(params.maxY > params.minY, "maxY must be > minY")
-    require((!params.types.contains(GeomType.POLYGON)) || params.maxXRadius > 0, "x-radius must be > 0")
-    require((!params.types.contains(GeomType.POLYGON)) || params.maxYRadius > 0, "y-radius must be > 0")
-    require((!params.types.contains(GeomType.POLYGON)) || params.polyPoints > 0, "y-radius must be > 0")
+    require((!params.types.contains(Type.POLYGON)) || params.maxXRadius > 0, "x-radius must be > 0")
+    require((!params.types.contains(Type.POLYGON)) || params.maxYRadius > 0, "y-radius must be > 0")
+    require((!params.types.contains(Type.POLYGON)) || params.polyPoints > 0, "y-radius must be > 0")
     
     val geoms = params.types.iterator.flatMap { t => 
       t match {
-        case GeomType.POINT => 
+        case Type.POINT => 
           new PointGenerator(params.minX, params.maxX, params.minY, params.maxY, params.num).iterator
-        case GeomType.POLYGON =>
+        case Type.POLYGON =>
           new PolygonGenerator(params.minX, params.maxX, params.minY, params.maxY, params.maxXRadius, params.maxYRadius,params.polyPoints, params.num).iterator
       }
     }.map(_.wkt)
     
+    val times = params.interval.map( i => new IntervalGenerator(i, params.num * params.types.size)).map(_.iterator.map(_.mkString(';')))
+    
+    
+    val geoTimes = times.map(ts => geoms.zip(ts).map{case (g,t) => s"${g};${t}"}).getOrElse(geoms)
     
     if(params.id)
-      geoms.zipWithIndex.map{ case (wkt, id) => s"$id;$wkt" }
+      geoTimes.zipWithIndex.map{ case (obj, id) => s"$id;$obj" }
     else
-      geoms
+      geoTimes
   }
   
   /**

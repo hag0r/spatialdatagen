@@ -1,4 +1,4 @@
-package dbis.datagen.spatial.types
+package dbis.datagen.st.types
 
 case class Polygon(points: Seq[Point]) extends WKT {
   override def toString() = points.mkString(",")

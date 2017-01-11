@@ -1,4 +1,4 @@
-package dbis.datagen.spatial.types
+package dbis.datagen.st.types
 
 case class Point(x: Double, y: Double) extends WKT {
   

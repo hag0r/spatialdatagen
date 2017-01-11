@@ -1,7 +1,9 @@
-package dbis.datagen.spatial
+package dbis.datagen.st
 
-import dbis.datagen.spatial.types.Point
+import dbis.datagen.st.types.Point
 import dbis.setm.SETM._
+import dbis.datagen.BasicGenerators
+import dbis.datagen.AbstractGenerator
 
 /**
  * A generator for random points.

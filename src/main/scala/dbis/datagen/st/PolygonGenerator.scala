@@ -1,9 +1,11 @@
-package dbis.datagen.spatial
+package dbis.datagen.st
 
 import scala.util.Random
-import dbis.datagen.spatial.types.Polygon
-import dbis.datagen.spatial.types.Point
+import dbis.datagen.st.types.Polygon
+import dbis.datagen.st.types.Point
 import dbis.setm.SETM._
+import dbis.datagen.BasicGenerators
+import dbis.datagen.AbstractGenerator
 
 /**
  * A generator class for polygons

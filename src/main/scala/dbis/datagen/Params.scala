@@ -1,9 +1,10 @@
-package dbis.datagen.spatial
+package dbis.datagen
 
 import java.nio.file.Path
-import dbis.datagen.spatial.Generator.GeomType
+import dbis.datagen.Generator.Type
 import scopt.OptionParser
 import java.io.File
+import dbis.datagen.st.types.Interval
 
 /**
  * Parameters for the generator
@@ -29,7 +30,8 @@ case class Params(
   id: Boolean = false,
   quiet: Boolean = false,
   file: Option[Path] = None,
-  types: Array[GeomType.GeomType] = Array.empty
+  types: Array[Type.Type] = Array.empty,
+  interval: Option[Interval] = None
 ) 
 
 object Params {
@@ -49,7 +51,8 @@ object Params {
       opt[Unit]("id") optional() action { (_,c) => c.copy(id = true) } text("Generate an ID (Long) for each object")
       opt[Unit]('q', "quiet") optional() action { (_,c) => c.copy(quiet = true) } text("Do not print execution time statistics")
       opt[Seq[String]]('t',"types") required() action { (x,c) => 
-        c.copy(types = x.map(t => GeomType.withName(t.toUpperCase())).toArray)} text(s"Comma separated list of types to generate (${GeomType.values.map(_.toString().toLowerCase()).mkString(",")})")
+        c.copy(types = x.map(t => Type.withName(t.toUpperCase())).toArray)} text(s"Comma separated list of types to generate (${Type.values.map(_.toString().toLowerCase()).mkString(",")})")
+      opt[Seq[Long]]('i',"interval") optional() action { (x,c) => c.copy(interval = Some(Interval(x(0),x(1)))) } validate (x => if(x.size == 2 && x(0) < x(1)) success else failure("Expected exactly two comma separated values")) text ("create interval with given min and max bounds")
       arg[File]("file") optional() action { (x, c) => c.copy(file = Some(x.toPath())) } text ("Output file to write results to. Use <stdout> if empty")
       
     }
