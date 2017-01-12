@@ -9,7 +9,7 @@ sbt assembly
 ```
 and run with
 ```
-java -jar target/scala-2.11/spatialdatagen.sh -n 10 -t point
+java -jar target/scala-2.12/spatialdatagen --num 10 --types point
 ```
 This will create 10 points in [WKT](https://en.wikipedia.org/wiki/Well-known_text) format and print them on your screen (stdout).
 
